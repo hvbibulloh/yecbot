@@ -8,9 +8,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-CSRF_TRUSTED_ORIGINS = ['https://570f-213-230-78-58.ngrok-free.app', 'http://127.0.0.1', 'https://127.0.0.1']
-
-
+CSRF_TRUSTED_ORIGINS = ['https://55b9-213-230-78-58.ngrok-free.app', 'http://127.0.0.1', 'https://127.0.0.1']
 
 INSTALLED_APPS = [
     'jazzmin',
@@ -119,7 +117,6 @@ JAZZMIN_SETTINGS = {
     "search_model": ['auth.User', 'products.Product'],
 
     "user_avatar": None,
-    "show_ui_builder": True,
     "topmenu_links": [
         {"name": "Home", "url": "admin:index",
          "permissions": ["auth.view_user"]},
