@@ -51,6 +51,7 @@ class Product(models.Model):
     eni = models.FloatField(verbose_name="Eni")
     sub_id = models.ForeignKey(SubCategory, on_delete=models.CASCADE, verbose_name="SubKategoria")
     created_at = models.DateTimeField(auto_now=True)
+    nasiya = models.BooleanField(verbose_name="Nasiya savdo", default=False)
 
     def __str__(self) -> str:
         return self.sub_id.name

@@ -8,7 +8,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-CSRF_TRUSTED_ORIGINS = ['https://55b9-213-230-78-58.ngrok-free.app', 'http://127.0.0.1', 'https://127.0.0.1']
+CSRF_TRUSTED_ORIGINS = ['https://a945-84-54-86-238.ngrok-free.app', 'http://127.0.0.1', 'https://127.0.0.1']
 
 INSTALLED_APPS = [
     'jazzmin',
