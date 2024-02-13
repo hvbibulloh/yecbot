@@ -51,3 +51,13 @@ class Database:
             return result if result else []
         except Exception as e:
             print(f"Database Error: {e}")
+
+    async def get_products_sub(self, sub_id_id):
+        try:
+            self.cursor.execute(
+                f"SELECT * FROM products_subcategory WHERE id={sub_id_id}"
+            )
+            result = self.cursor.fetchone()
+            return result
+        except Exception as e:
+            print(f"Database Error: {e}")

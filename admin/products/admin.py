@@ -14,4 +14,4 @@ class ModelSubCategory(admin.ModelAdmin):
 
 @admin.register(Product)
 class ModelProduct(admin.ModelAdmin):
-    list_display = ['name', 'sub_id', 'created_at']
+    list_display = ['country', 'sub_id', 'created_at']

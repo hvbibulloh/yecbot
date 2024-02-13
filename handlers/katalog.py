@@ -18,7 +18,7 @@ async def bizning_katalog(message: types.Message):
 
 
 @dp.callback_query_handler(lambda call: call.data.split('_')[0] == "cat")
-async def inline_katalog_callback(call: types.CallbackQuery):
+async def inline_katalog_callback(call: types.CallbackQuery, state: FSMContext):
     id = call.data.split('_')[1]
     data = await db.get_sub_categories(int(id))
     if data:
@@ -37,25 +37,28 @@ async def inline_katalog_callback(call: types.CallbackQuery):
 
 
 @dp.callback_query_handler(lambda call: call.data.split('_')[0] == 'sub')
-async def product_katalog_inline(call: types.CallbackQuery):
+async def product_katalog_inline(call: types.CallbackQuery, state: FSMContext):
     id = call.data.split('_')[1]
+    sub_data = await db.get_products_sub(int(id))
+
     n = 1
     data = await db.get_product(int(id))
+
     if data and len(data) > 1:
         end = types.InlineKeyboardButton('🔙', callback_data=f'back_{len(data) if n == 1 else n - 1}_{id}')
         work = types.InlineKeyboardButton('Sotib Olish', callback_data=f'work_{n}_{id}_{data[n - 1][0]}')
         next = types.InlineKeyboardButton('🔜', callback_data=f'next_{1 if n == len(data) else n + 1}_{id}')
         btn = types.InlineKeyboardMarkup(inline_keyboard=[[end, work, next]])
-        await call.message.answer_photo(photo=open(f"{BASE}/admin/media/{data[n - 1][2]}", 'rb'),
-                                        caption=f"<b>Ишлаб чикарилиши:</b> {data[n - 1][3]}\n<b>Коллекция:</b> {data[n - 1][1]}\n<b>Стиль:</b> {data[n - 1][4]}\n<b>Ип тури:</b> {data[n - 1][6]}\n<b>Ворси баландлиги:</b> {data[n - 1][-1]}\n<b>Зичлиги:</b> {data[n - 1][9]}\n<b>Форма:</b> {data[n - 1][5]}\n<b>Ранглар:</b> {data[n - 1][10]}\n<b>Размер:</b> {data[n - 1][7]} x {data[n - 1][8]}\n<b>Нархи:</b> {data[n - 1][11] * data[n - 1][7] * data[n - 1][8]} сум\n",
+        await call.message.answer_photo(photo=open(f"{BASE}/admin/media/{data[n - 1][1]}", 'rb'),
+                                        caption=f"<b>Коллекция:</b> {sub_data[1]}\n<b>Стиль:</b> {data[n - 1][2]}\n<b>Ип тури:</b> {sub_data[-6]}\n<b>Ворси баландлиги:</b> {sub_data[-4]}\n<b>Зичлиги:</b> {sub_data[-5]}\n<b>Форма:</b> {data[n - 1][3]}\n<b>Ранглар:</b> {sub_data[-3]}\n<b>Размер:</b> {data[n - 1][4]} x {data[n - 1][5]}\n<b>Нархи:</b> {data[n - 1][4] * data[n - 1][5] * sub_data[-2]} сум\n",
                                         reply_markup=btn, parse_mode="HTML")
-
 
     elif data and len(data) == 1:
         work = types.InlineKeyboardButton('Sotib Olish', callback_data=f'work_{n}_{id}_{data[n - 1][0]}')
         btn_work = types.InlineKeyboardMarkup(inline_keyboard=[[work]])
-        await call.message.answer_photo(photo=open(f"{BASE}/admin/media/{data[n - 1][2]}", 'rb'),
-                                        caption=f"<b>Ишлаб чикарилиши:</b> {data[n - 1][3]}\n<b>Коллекция:</b> {data[n - 1][1]}\n<b>Стиль:</b> {data[n - 1][4]}\n<b>Ип тури:</b> {data[n - 1][6]}\n<b>Ворси баландлиги:</b> {data[n - 1][-1]}\n<b>Зичлиги:</b> {data[n - 1][9]}\n<b>Форма:</b> {data[n - 1][5]}\n<b>Ранглар:</b> {data[n - 1][10]}\n<b>Размер:</b> {data[n - 1][7]} x {data[n - 1][8]}\n<b>Нархи:</b> {data[n - 1][11] * data[n - 1][7] * data[n - 1][8]} сум\n"
+        await call.message.answer_photo(photo=open(f"{BASE}/admin/media/{data[n - 1][1]}", 'rb'),
+                                        caption=f"<b>Коллекция:</b> {sub_data[1]}\n<b>Стиль:</b> {data[n - 1][2]}\n<b>Ип тури:</b> {sub_data[-6]}\n<b>Ворси баландлиги:</b> {sub_data[-4]}\n<b>Зичлиги:</b> {sub_data[-5]}\n<b>Форма:</b> {data[n - 1][3]}\n<b>Ранглар:</b> {sub_data[-3]}\n<b>Размер:</b> {data[n - 1][4]} x {data[n - 1][5]}\n<b>Нархи:</b> {data[n - 1][4] * data[n - 1][5] * sub_data[-2]} сум\n"
+
                                         , reply_markup=btn_work, parse_mode="HTML")
     else:
         await call.message.answer(text='Hozircha Gilamlar mavjud emas!')
@@ -65,6 +68,7 @@ async def product_katalog_inline(call: types.CallbackQuery):
 async def callback_handler(callback: types.CallbackQuery, state: FSMContext):
     await callback.message.delete()
     id = callback.data.split('_')[2]
+    sub_data = await db.get_products_sub(int(id))
     stories = await db.get_product(int(id))
     n = 1
     text = callback.data.split('_')
@@ -83,25 +87,29 @@ async def callback_handler(callback: types.CallbackQuery, state: FSMContext):
     work = types.InlineKeyboardButton('Sotib Olish', callback_data=f'work_{n}_{id}_{stories[n - 1][0]}')
     next = types.InlineKeyboardButton('🔜', callback_data=f'next_{1 if n == len(stories) else n + 1}_{id}')
     btn = types.InlineKeyboardMarkup(inline_keyboard=[[end, work, next]])
-    await callback.message.answer_photo(photo=open(f"{BASE}/admin/media/{stories[n - 1][2]}", 'rb'),
-                                        caption=f"<b>Ишлаб чикарилиши:</b> {stories[n - 1][3]}\n<b>Коллекция:</b> {stories[n - 1][1]}\n<b>Стиль:</b> {stories[n - 1][4]}\n<b>Ип тури:</b> {stories[n - 1][6]}\n<b>Ворси баландлиги:</b> {stories[n - 1][-1]}\n<b>Зичлиги:</b> {stories[n - 1][9]}\n<b>Форма:</b> {stories[n - 1][5]}\n<b>Ранглар:</b> {stories[n - 1][10]}\n<b>Размер:</b> {stories[n - 1][7]} x {stories[n - 1][8]}\n<b>Нархи:</b> {stories[n - 1][11] * stories[n - 1][7] * stories[n - 1][8]} сум\n"
+    await callback.message.answer_photo(photo=open(f"{BASE}/admin/media/{stories[n - 1][1]}", 'rb'),
+                                        caption=f"<b>Коллекция:</b> {sub_data[1]}\n<b>Стиль:</b> {stories[n - 1][2]}\n<b>Ип тури:</b> {sub_data[-6]}\n<b>Ворси баландлиги:</b> {sub_data[-4]}\n<b>Зичлиги:</b> {sub_data[-5]}\n<b>Форма:</b> {stories[n - 1][3]}\n<b>Ранглар:</b> {sub_data[-3]}\n<b>Размер:</b> {stories[n - 1][4]} x {stories[n - 1][5]}\n<b>Нархи:</b> {stories[n - 1][4] * stories[n - 1][5] * sub_data[-2]} сум\n"
                                         , reply_markup=btn, parse_mode="HTML")
     await callback.answer(str(f"📑 Siz shu sahifadasiz: {n}"))
 
 
 @dp.message_handler(state=BoglanishState.phone, content_types=types.ContentType.CONTACT)
 async def phone_handler(message: types.Message, state: FSMContext):
-    await message.answer(
-        "Телефон рақамингизни юборганингиз учун раҳмат!😊\n Тез орада операторларимиз сиз билан боғланишади 👩🏻‍💻",
-        reply_markup=users_keyboard)
-    async with state.proxy() as data:
-        id = data['media_id']
-        send = await db.get_products(int(id))
-        for i in send:
-            await bot.send_message(chat_id=941535008,
-                                   text=f"Mijoz Telefon raqami: {message.contact.phone_number}\n\nXarid qilmoqchi 🤝:\n\nIshlab chiqarilishi: {i[3]}\nNomi: {i[1]}\nStill: {i[4]}\nIp turi {i[6]}\nVorsi {i[-1]}\nZichligi {i[9]}\nForma {i[5]}\nRazmer {i[7]} x {i[8]}\nNarxi {i[7] * i[8] * i[11]}")
+    try:
+        await message.answer(
+            "Телефон рақамингизни юборганингиз учун раҳмат!😊\n Тез орада операторларимиз сиз билан боғланишади 👩🏻‍💻",
+            reply_markup=users_keyboard)
+        async with state.proxy() as data:
+            id = data['media_id']
+            datas = await db.get_products(int(id))
+            sub_data = await db.get_products_sub(int(id))
 
-    await state.finish()
+            for i in datas:
+                await bot.send_message(chat_id=941535008,
+                                       text=f"Mijoz Telefon raqami: {message.contact.phone_number}\n\nXarid qilmoqchi 🤝:\n\n<b>Коллекция:</b> {sub_data[1]}\n<b>Стиль:</b> {i[2]}\n<b>Ип тури:</b> {sub_data[-6]}\n<b>Ворси баландлиги:</b> {sub_data[-4]}\n<b>Зичлиги:</b> {sub_data[-5]}\n<b>Форма:</b> {i[3]}\n<b>Ранглар:</b> {sub_data[-3]}\n<b>Размер:</b> {i[4]} x {i[5]}\n<b>Нархи:</b> {i[4] * i[5] * sub_data[-2]} сум\n")
+        await state.finish()
+    except Exception as e:
+        print(f"An exception occurred: {e}")
 
 
 @dp.message_handler(commands="start", state=BoglanishState.phone)
