@@ -1,5 +1,5 @@
 from aiogram import types
-from keyboards.default.users_keyboard import users_keyboard
+
 from keyboards.inline.katalog_inline import location_keyboard
 from loader import dp, bot
 
@@ -20,4 +20,3 @@ async def tarmoq(message: types.Message):
                          f"<a href=\"{instagram_link}\">Instagram</a>\n"
                          f"<a href=\"{youtube_link}\">YouTube</a>\n"
                          f"@LuxGilam_rasmiy", parse_mode="HTML")
-

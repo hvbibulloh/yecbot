@@ -1,13 +1,10 @@
-from email._header_value_parser import ContentType
-
 from aiogram import types
 from aiogram.dispatcher import FSMContext
+from aiogram.dispatcher.filters.state import State, StatesGroup
 
 from keyboards.default.users_keyboard import send_contact, users_keyboard
 from keyboards.inline.katalog_inline import category_keyboard
 from loader import dp, db, BASE, bot
-
-from aiogram.dispatcher.filters.state import State, StatesGroup
 
 
 class BoglanishState(StatesGroup):

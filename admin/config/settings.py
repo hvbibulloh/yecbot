@@ -6,7 +6,11 @@ SECRET_KEY = 'django-insecure-4*aijcg5+aw644nlqbt*!gm##lbx#0c%ykcu&0pao@jpb5z#e4
 
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ['*']
+
+CSRF_TRUSTED_ORIGINS = ['https://570f-213-230-78-58.ngrok-free.app', 'http://127.0.0.1', 'https://127.0.0.1']
+
+
 
 INSTALLED_APPS = [
     'jazzmin',
@@ -49,7 +53,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -60,7 +63,6 @@ DATABASES = {
         'PORT': 5432
     }
 }
-
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -77,7 +79,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'Asia/Tashkent'
@@ -86,9 +87,8 @@ USE_I18N = True
 
 USE_TZ = True
 
-
 STATIC_URL = 'static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 MEDIA_URL = 'media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -122,7 +122,7 @@ JAZZMIN_SETTINGS = {
     "show_ui_builder": True,
     "topmenu_links": [
         {"name": "Home", "url": "admin:index",
-            "permissions": ["auth.view_user"]},
+         "permissions": ["auth.view_user"]},
 
         {"name": "Support", "url": "https://t.me/rozievich", "new_window": True},
 
