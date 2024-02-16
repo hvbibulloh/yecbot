@@ -35,6 +35,9 @@ async def inline_katalog_callback(call: types.CallbackQuery, state: FSMContext):
         if media:
             await bot.send_media_group(chat_id=call.message.chat.id, media=media)
 
+    else:
+        await call.message.answer("Gilamlar mavjud emas ⛔")
+
 
 @dp.callback_query_handler(lambda call: call.data.split('_')[0] == 'sub')
 async def product_katalog_inline(call: types.CallbackQuery, state: FSMContext):
@@ -43,7 +46,7 @@ async def product_katalog_inline(call: types.CallbackQuery, state: FSMContext):
 
     n = 1
     data = await db.get_product(int(id))
-    print(sub_data)
+
 
     if data and len(data) > 1:
         end = types.InlineKeyboardButton('🔙', callback_data=f'back_{len(data) if n == 1 else n - 1}_{id}')
