@@ -38,10 +38,6 @@ class Database:
         except Exception as e:
             print(f"Database Error: {e}")
 
-    def close_connection(self):
-        self.cursor.close()
-        self.connection.close()
-
     async def get_products(self, product_id):
         try:
             self.cursor.execute(
